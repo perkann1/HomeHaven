@@ -1,0 +1,20 @@
+From: HomeHaven <homehaven@local>
+Date: Mon, 21 Apr 2026 00:00:00 +0000
+Subject: [PATCH] Fix lua_scripts linker language for cross-compilation
+
+cmake cannot determine the linker language for the lua_scripts OBJECT
+library because its sources are .hex and .h files, which cmake does not
+recognise as compilable C files. Set it explicitly so cross-compilation
+toolchain files do not reject the target.
+
+Upstream-Status: Inappropriate [cross-compile specific]
+
+--- a/src/lua/scripts/CMakeLists.txt
++++ b/src/lua/scripts/CMakeLists.txt
+@@ -31,5 +31,6 @@
+ add_dependencies(lua lua_scripts)
+
+ add_library(lua_scripts OBJECT ${sources})
++set_target_properties(lua_scripts PROPERTIES LINKER_LANGUAGE C)
+ target_compile_options(lua_scripts PRIVATE ${EXTRAWARN})
+ target_include_directories(lua_scripts PRIVATE ${PROJECT_SOURCE_DIR}/src)

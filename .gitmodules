@@ -1,0 +1,12 @@
+[submodule "poky"]
+	path = poky
+	url = https://git.yoctoproject.org/poky
+	branch = walnascar
+[submodule "meta-openembedded"]
+	path = meta-openembedded
+	url = https://git.openembedded.org/meta-openembedded
+	branch = walnascar
+[submodule "meta-raspberrypi"]
+	path = meta-raspberrypi
+	url = https://git.yoctoproject.org/meta-raspberrypi
+	branch = walnascar

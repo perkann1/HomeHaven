@@ -1,0 +1,11 @@
+# Build directory — entirely machine-specific and reproducible
+build/
+
+# Claude Code
+CLAUDE.md
+.claude/
+
+# Editor
+.vscode/
+*.swp
+*~

@@ -1,0 +1,16 @@
+# HomeHaven partition layout for Raspberry Pi 4
+#
+# Slot design:
+#   boot      — FAT32, RPi firmware reads this at power-on. Never changes between updates.
+#   rootfs-a  — Active system image. Mounted read-only at runtime.
+#   rootfs-b  — Standby slot. Empty on first flash. OTA writes here, then swaps active.
+#   data      — Persistent user data. Survives every OS update and reflash.
+#               Nextcloud files, Jellyfin media, configs, databases all live here.
+#               1 GB in the flashed image; a first-boot service expands it to fill the SD card.
+#
+# Partition labels are used for mounting (not UUIDs) so they survive across cards.
+
+part /boot   --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot     --active --align 4 --size 128
+part /       --source rootfs            --ondisk mmcblk0 --fstype=ext4  --label rootfs-a         --align 4 --size 2048
+part         --ondisk mmcblk0 --fstype=ext4  --label rootfs-b --align 4 --size 2048
+part /data   --ondisk mmcblk0 --fstype=ext4  --label data     --align 4 --size 1024

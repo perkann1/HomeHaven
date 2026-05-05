@@ -1,0 +1,17 @@
+[Unit]
+Description=Pi-hole gravity database initialisation
+# Needs /data mounted and network reachable before it runs.
+After=data.mount network-online.target
+Wants=network-online.target
+# Must finish before the DNS server starts.
+Before=pihole.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/pihole-gravity-init
+RemainAfterExit=yes
+# Give the download reasonable time — large hosts file on first boot.
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+[Unit]
+Description=Pi-hole FTL DNS server
+After=network.target data.mount pihole-gravity-init.service
+Wants=pihole-gravity-init.service
+
+[Service]
+Type=forking
+PIDFile=/run/pihole-FTL.pid
+# RuntimeDirectory creates /run/pihole-FTL owned by root before ExecStart.
+RuntimeDirectory=pihole-FTL
+ExecStart=/usr/sbin/pihole-FTL
+ExecStop=/bin/kill -15 $MAINPID
+ExecStopPost=/bin/rm -f /run/pihole-FTL.pid
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

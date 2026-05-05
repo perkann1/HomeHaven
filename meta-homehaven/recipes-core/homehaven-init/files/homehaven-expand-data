@@ -1,0 +1,49 @@
+#!/bin/sh
+# Expands the data partition (LABEL=data) to fill all remaining space on the
+# SD card, then resizes the ext4 filesystem to match.
+#
+# Safe to run on every boot — exits quickly if no expansion is needed.
+# Runs before data.mount so the partition is never mounted during resize.
+
+set -e
+
+DATA_DEV=$(blkid -L data 2>/dev/null)
+if [ -z "$DATA_DEV" ]; then
+    echo "homehaven-expand: LABEL=data not found, skipping"
+    exit 0
+fi
+
+# /dev/mmcblk0p4 -> DISK=/dev/mmcblk0, PART_NUM=4
+DISK="${DATA_DEV%p[0-9]*}"
+PART_NUM="${DATA_DEV##*p}"
+DISK_NAME="${DISK##*/}"
+
+# Compare total disk sectors with the end of our partition.
+# If there are fewer than 2048 free sectors (~1 MB) after the partition,
+# it already fills the disk — nothing to do.
+DISK_SECTORS=$(cat /sys/block/${DISK_NAME}/size)
+PART_START=$(sfdisk -d "$DISK" 2>/dev/null | grep "^${DATA_DEV}" | grep -o 'start=[0-9 ]*' | tr -dc '0-9')
+PART_SIZE=$(sfdisk -d  "$DISK" 2>/dev/null | grep "^${DATA_DEV}" | grep -o 'size=[0-9 ]*'  | tr -dc '0-9')
+PART_END=$((PART_START + PART_SIZE))
+
+if [ $((DISK_SECTORS - PART_END)) -lt 2048 ]; then
+    echo "homehaven-expand: data partition already fills disk, skipping"
+    exit 0
+fi
+
+echo "homehaven-expand: expanding ${DATA_DEV} on ${DISK} (${DISK_SECTORS} sectors total)"
+
+# Rewrite the partition entry to fill all remaining space.
+# --no-reread: don't ask the kernel to re-read yet (other partitions are mounted).
+echo ", +" | sfdisk --no-reread -N "$PART_NUM" "$DISK"
+
+# Tell the kernel about the new partition boundary.
+partx -u "$DISK" || true
+
+# e2fsck is required before resize2fs can run.
+e2fsck -f -p "$DATA_DEV" || true
+
+# Expand the filesystem to fill the enlarged partition.
+resize2fs "$DATA_DEV"
+
+echo "homehaven-expand: done"

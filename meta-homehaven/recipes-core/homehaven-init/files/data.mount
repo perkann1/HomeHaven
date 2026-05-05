@@ -1,0 +1,14 @@
+[Unit]
+Description=HomeHaven data partition
+# Wait for the expand service so the filesystem is at its final size before mount.
+Wants=homehaven-expand-data.service
+After=homehaven-expand-data.service
+
+[Mount]
+What=/dev/disk/by-label/data
+Where=/data
+Type=ext4
+Options=defaults,noatime
+
+[Install]
+WantedBy=local-fs.target
