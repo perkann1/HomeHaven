@@ -1,0 +1,27 @@
+# Invidious configuration for HomeHaven
+# Full reference: https://docs.invidious.io/configuration/
+
+# ── Database ──────────────────────────────────────────────────────────────────
+db:
+  dbname: /data/invidious/invidious.db
+
+# ── Server ────────────────────────────────────────────────────────────────────
+host: "0.0.0.0"
+port: 3000
+
+https_only: false
+domain:
+external_port: 3000
+
+# ── Privacy ───────────────────────────────────────────────────────────────────
+# Closed to registration — this is a private home server instance.
+registration_enabled: false
+login_enabled: false
+statistics_enabled: false
+
+# ── Performance ───────────────────────────────────────────────────────────────
+# Pool size for concurrent requests. Keep low on RPi 4.
+pool_size: 100
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+log_level: Info

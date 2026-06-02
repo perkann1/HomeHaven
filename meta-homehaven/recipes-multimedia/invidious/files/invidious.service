@@ -1,0 +1,17 @@
+[Unit]
+Description=Invidious YouTube frontend
+After=network.target data.mount
+Wants=data.mount
+
+[Service]
+Type=simple
+ExecStartPre=/bin/mkdir -p /data/invidious
+ExecStart=/usr/bin/invidious
+WorkingDirectory=/data/invidious
+Restart=on-failure
+RestartSec=5
+# Invidious reads config from the working directory or /etc/invidious/
+Environment=INVIDIOUS_CONFIG_FILE=/etc/invidious/config.yml
+
+[Install]
+WantedBy=multi-user.target

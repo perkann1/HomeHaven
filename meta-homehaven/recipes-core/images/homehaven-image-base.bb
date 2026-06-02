@@ -27,6 +27,7 @@ IMAGE_INSTALL = " \
     homehaven-network \
     homehaven-init \
     pihole \
+    invidious \
     ${CORE_IMAGE_EXTRA_INSTALL} \
 "
 
