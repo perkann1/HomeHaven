@@ -38,6 +38,7 @@ The goal is a single image that covers the core needs of a private home server:
 - 🔑 **Password manager** — self-hosted, your passwords never leave your house (Vaultwarden)
 - 🏠 **Home automation** — local control, no cloud dependency (Home Assistant)
 - 🌐 **VPN access** — securely reach your home network from anywhere
+- 📺 **YouTube without ads** — self-hosted Invidious frontend, no tracking, no ads on any device
 - 📊 **Dashboard** — clean overview of your server health and running services
 
 All services are baked into the Yocto image as proper recipes — not installed manually after boot, not running in Docker on top of a generic OS. Purpose built, from the ground up.
